@@ -1125,8 +1125,8 @@ html[data-theme="light"] body.accessibility-mode [style*="color:var(--red)"]{
         <span class="theme-icon" aria-hidden="true">☀</span><span class="theme-label">Light Mode</span>
       </button>
       <span class="control-divider" aria-hidden="true"></span>
-      <button class="a11y-toggle" id="accessibilityToggle" type="button" aria-pressed="false" aria-label="Turn on accessibility view">
-        <span class="a11y-icon" aria-hidden="true">A+</span><span class="a11y-label">Accessibility</span>
+      <button class="a11y-toggle" id="accessibilityToggle" type="button" aria-pressed="false" aria-label="Enable enhanced readability with larger text and higher contrast" title="Enable enhanced readability">
+        <span class="a11y-icon" aria-hidden="true">A+</span><span class="a11y-label">Enhanced Readability</span>
       </button>
     </div>
     <div class="pulse" aria-hidden="true"></div>
@@ -2614,9 +2614,8 @@ document.addEventListener('click',function(e){
   function setAccessibilityMode(enabled,savePreference){
     document.body.classList.toggle('accessibility-mode',enabled);
     toggle.setAttribute('aria-pressed',enabled?'true':'false');
-    toggle.setAttribute('aria-label',enabled?'Turn off accessibility view':'Turn on accessibility view');
-    const label=toggle.querySelector('.a11y-label');
-    if(label) label.textContent=enabled?'Accessibility On':'Accessibility';
+    toggle.setAttribute('aria-label',enabled?'Disable enhanced readability':'Enable enhanced readability with larger text and higher contrast');
+    toggle.setAttribute('title',enabled?'Disable enhanced readability':'Enable enhanced readability');
     if(savePreference){
       try{localStorage.setItem('prompting-impact-accessibility',enabled?'on':'off');}catch(e){}
     }
