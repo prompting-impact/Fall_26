@@ -938,9 +938,6 @@ body.accessibility-mode [style*="opacity:0.4"],
 body.accessibility-mode [style*="opacity:.6"],
 body.accessibility-mode [style*="opacity:0.6"]{opacity:1 !important;}
 body.accessibility-mode a:not(.th-card){text-decoration:underline;text-underline-offset:3px;}
-body.accessibility-mode *,body.accessibility-mode *::before,body.accessibility-mode *::after{
-  animation-play-state:paused !important;
-}
 
 /* OPTIONAL LIGHT MODE — selected independently from the accessibility view */
 html[data-theme="light"]{color-scheme:light;}
@@ -1880,7 +1877,7 @@ html[data-theme="light"] body.accessibility-mode [style*="color:var(--red)"]{
       <div class="grade-item">
         <div class="grade-row"><span class="grade-name">Total</span><span class="grade-pct">100%</span></div>
         <div class="grade-track"><div class="grade-fill" data-w="100"></div></div>
-        <p class="grade-desc">The grading structure balances long-form design inquiry, selected modular depth, public communication, and sustained studio engagement.</p>
+        <p class="grade-desc">The grading structure balances design inquiry, modular investigation depth, public communication, and sustained course engagement.</p>
       </div>
     </div>
   </div>
@@ -2613,7 +2610,6 @@ document.addEventListener('click',function(e){
 (function(){
   const toggle=document.getElementById('accessibilityToggle');
   if(!toggle) return;
-  const videos=Array.from(document.querySelectorAll('video'));
 
   function setAccessibilityMode(enabled,savePreference){
     document.body.classList.toggle('accessibility-mode',enabled);
@@ -2621,13 +2617,6 @@ document.addEventListener('click',function(e){
     toggle.setAttribute('aria-label',enabled?'Turn off accessibility view':'Turn on accessibility view');
     const label=toggle.querySelector('.a11y-label');
     if(label) label.textContent=enabled?'Accessibility On':'Accessibility';
-    videos.forEach(function(video){
-      if(enabled){video.pause();}
-      else if(video.autoplay&&!document.body.classList.contains('motion-paused')){
-        const attempt=video.play();
-        if(attempt&&typeof attempt.catch==='function') attempt.catch(function(){});
-      }
-    });
     if(savePreference){
       try{localStorage.setItem('prompting-impact-accessibility',enabled?'on':'off');}catch(e){}
     }
