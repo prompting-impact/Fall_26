@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Prompting Impact — Gensler × UT Knoxville · Fall 2026</title>
+<script>
+/* Apply a saved theme before the page paints. The original dark design remains the default. */
+try{
+  if(localStorage.getItem('prompting-impact-theme')==='light'){
+    document.documentElement.setAttribute('data-theme','light');
+  }
+}catch(e){}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
 <style>
@@ -114,7 +122,13 @@ nav{
 .nav-links{display:flex;gap:12px;list-style:none;margin:0 auto;padding:0 18px;}
 .nav-links a{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--text2);text-decoration:none;transition:color .2s;white-space:nowrap;}
 .nav-links a:hover{color:var(--red);}
-.nav-right{display:flex;align-items:center;gap:8px;flex:0 0 auto;}
+.nav-right{display:flex;align-items:center;gap:12px;flex:0 0 auto;}
+.nav-controls{
+  display:flex;align-items:center;gap:10px;
+  padding-left:14px;margin-left:4px;
+  border-left:1px solid var(--border2);
+}
+.control-divider{width:1px;height:20px;background:var(--border2);flex:0 0 1px;}
 .nav-status,.pulse{display:none;}
 .pulse{width:5px;height:5px;border-radius:50%;background:#2ecc71;animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.2;}}
@@ -829,6 +843,17 @@ a:focus-visible,button:focus-visible,[role="button"]:focus-visible{
 .a11y-toggle:hover{color:var(--cream);border-color:var(--orange);}
 .a11y-toggle[aria-pressed="true"]{background:#fff;color:#090909;border-color:#fff;}
 .a11y-icon{font-size:10px;font-weight:700;letter-spacing:0;}
+.theme-toggle{
+  display:inline-flex;align-items:center;gap:6px;
+  min-width:32px;min-height:30px;justify-content:center;padding:5px 7px;
+  background:transparent;border:1px solid var(--border2);
+  color:#fff;font-family:var(--mono);font-size:10px;
+  letter-spacing:.1em;text-transform:uppercase;cursor:pointer;white-space:nowrap;
+  transition:color .2s,border-color .2s,background .2s;
+}
+.theme-toggle:hover{color:var(--cream);border-color:var(--orange);}
+.theme-toggle[aria-pressed="true"]{background:#fff;color:#090909;border-color:#fff;}
+.theme-icon{font-size:12px;font-weight:700;line-height:1;letter-spacing:0;}
 .sh-title{font-weight:400;margin:0;}
 
 body.accessibility-mode{
@@ -878,7 +903,8 @@ body.accessibility-mode .feat-work-author,body.accessibility-mode .thresh-label,
 body.accessibility-mode .pol-label,body.accessibility-mode .topic-label,
 body.accessibility-mode .quote-attr,body.accessibility-mode footer,
 body.accessibility-mode .partner-label,body.accessibility-mode .tl-note,
-body.accessibility-mode .a11y-toggle,body.accessibility-mode .mobile-nav ul li a,
+body.accessibility-mode .a11y-toggle,body.accessibility-mode .theme-toggle,
+body.accessibility-mode .mobile-nav ul li a,
 body.accessibility-mode .ds-wnum,body.accessibility-mode .ds-wtitle small,
 body.accessibility-mode .ds-tag,body.accessibility-mode .ds-session-day{
   font-size:13px !important;letter-spacing:.08em;
@@ -915,12 +941,150 @@ body.accessibility-mode a:not(.th-card){text-decoration:underline;text-underline
 body.accessibility-mode *,body.accessibility-mode *::before,body.accessibility-mode *::after{
   animation-play-state:paused !important;
 }
-@media(max-width:1120px){
+
+/* OPTIONAL LIGHT MODE — selected independently from the accessibility view */
+html[data-theme="light"]{color-scheme:light;}
+html[data-theme="light"] body{
+  --bg:#fff;
+  --bg2:#f2f2f2;
+  --bg3:#e5e5e5;
+  --surface:#fff;
+  --surface2:#ededed;
+  --border:rgba(0,0,0,.32);
+  --border2:rgba(0,0,0,.72);
+  --cream:#000;
+  --cream-dim:rgba(0,0,0,.08);
+  --red:#950c25;
+  --red2:#950c25;
+  --red-dim:rgba(149,12,37,.11);
+  --orange:#743a00;
+  --orange-dim:rgba(116,58,0,.10);
+  --text:#000;
+  --text2:#171717;
+  --text3:#333;
+}
+html[data-theme="light"] body::before{
+  display:none;
+}
+html[data-theme="light"] body::after{opacity:.16;}
+html[data-theme="light"] nav:not(.mobile-nav){
+  background:rgba(255,255,255,.97);
+  border-bottom-color:var(--border2);
+}
+html[data-theme="light"] .mobile-nav{background:rgba(255,255,255,.99);}
+html[data-theme="light"] .a11y-toggle,
+html[data-theme="light"] .theme-toggle{color:var(--text);}
+html[data-theme="light"] .a11y-toggle[aria-pressed="true"],
+html[data-theme="light"] .theme-toggle[aria-pressed="true"]{
+  background:#000;color:#fff;border-color:#000;
+}
+html[data-theme="light"] .tl-months div,
+html[data-theme="light"] .tl-weeks div,
+html[data-theme="light"] .tl-row-label,
+html[data-theme="light"] .tl-track{border-color:var(--border2);}
+html[data-theme="light"] .tl-track{
+  background-image:repeating-linear-gradient(90deg,var(--border2) 0 1px,transparent 1px calc(100% / 16));
+}
+html[data-theme="light"] .tl-bar.exposure{border-color:var(--border);}
+html[data-theme="light"] .hstat-val,
+html[data-theme="light"] .mc-title,
+html[data-theme="light"] .wk-range,
+html[data-theme="light"] .grade-pct,
+html[data-theme="light"] .ds-session-title,
+html[data-theme="light"] #mod-panel-title{color:var(--text) !important;}
+html[data-theme="light"] .mc-num,
+html[data-theme="light"] .int-letter,
+html[data-theme="light"] .thresh-n{color:rgba(0,0,0,.14);}
+html[data-theme="light"] .tool-item{border-bottom-color:var(--border);}
+html[data-theme="light"] .th-card.th-linked:hover .th-name,
+html[data-theme="light"] .th-card.th-has-work:hover .th-name,
+html[data-theme="light"] .th-card.th-active .th-name{color:#740b1e !important;}
+html[data-theme="light"] .pol-label.ok{color:#176b39;}
+html[data-theme="light"] .ds-week-header:hover .ds-wnum{color:rgba(0,0,0,.82);}
+html[data-theme="light"] .ds-wnum{color:rgba(0,0,0,.54);}
+html[data-theme="light"] .ds-tag.blue{
+  border-color:rgba(23,82,128,.55);color:#175280;background:rgba(23,82,128,.08);
+}
+html[data-theme="light"] .ds-tag.cream{
+  border-color:var(--border2);color:var(--text2);background:var(--cream-dim);
+}
+/* Invert the image-led hero into a true light treatment while retaining its color identity. */
+html[data-theme="light"] .hero-header-art{opacity:.94;}
+html[data-theme="light"] .hero-header-art video{
+  filter:invert(1) hue-rotate(180deg) contrast(1.2) brightness(1.04) drop-shadow(0 0 22px rgba(0,0,0,.12));
+}
+html[data-theme="light"] .hero::after{
+  background:linear-gradient(to top,rgba(255,255,255,1) 0%,rgba(255,255,255,.94) 38%,rgba(255,255,255,.54) 74%,transparent 100%);
+}
+html[data-theme="light"] .hero-title,
+html[data-theme="light"] .hero-eyebrow{color:#000;}
+html[data-theme="light"] .hero-sub,
+html[data-theme="light"] .hero-desc{color:#000 !important;text-shadow:none;}
+html[data-theme="light"] .hero-title span{color:var(--red);}
+html[data-theme="light"] .hero-plate{color:rgba(0,0,0,.07);}
+html[data-theme="light"] .hero-motion-toggle{
+  color:#000;background:rgba(255,255,255,.92);border-color:rgba(0,0,0,.72);
+}
+html[data-theme="light"] .hero-motion-toggle:hover,
+html[data-theme="light"] .hero-motion-toggle:focus-visible{
+  color:#fff;background:#950c25;border-color:#950c25;
+}
+html[data-theme="light"] .hero-motion-toggle[aria-pressed="true"]{
+  color:#fff;border-color:#000;background:#000;
+}
+html[data-theme="light"] .partner-strip{
+  background:transparent;border-color:transparent;backdrop-filter:none;
+}
+html[data-theme="light"] .partner-label,
+html[data-theme="light"] .partner-divider{color:#000;}
+html[data-theme="light"] .partner-mark.gensler img{
+  filter:none;opacity:1;
+}
+html[data-theme="light"] .partner-mark.utk{position:relative;overflow:hidden;}
+html[data-theme="light"] .partner-mark.utk > img:not(.utk-logo-text-layer){
+  filter:none;opacity:1;
+}
+.partner-mark.utk .utk-logo-text-layer{
+  display:none;position:absolute;inset:0;width:100%;height:auto;
+  pointer-events:none;
+}
+html[data-theme="light"] .partner-mark.utk .utk-logo-text-layer{
+  display:block;
+  filter:grayscale(1) brightness(0);opacity:1;
+  clip-path:inset(0 0 0 22.5%);
+}
+/* Use dark accents when the larger-text accessibility view and light mode are combined. */
+html[data-theme="light"] body.accessibility-mode .hero-title span,
+html[data-theme="light"] body.accessibility-mode .hero-eyebrow,
+html[data-theme="light"] body.accessibility-mode .sh-num,
+html[data-theme="light"] body.accessibility-mode .premise-arrow,
+html[data-theme="light"] body.accessibility-mode .mc-eyebrow,
+html[data-theme="light"] body.accessibility-mode .wk-badge.red,
+html[data-theme="light"] body.accessibility-mode .out-num,
+html[data-theme="light"] body.accessibility-mode .tool-group-label,
+html[data-theme="light"] body.accessibility-mode .feat-work-eyebrow,
+html[data-theme="light"] body.accessibility-mode .thresh-label,
+html[data-theme="light"] body.accessibility-mode .pol-label,
+html[data-theme="light"] body.accessibility-mode .pol-list li::before,
+html[data-theme="light"] body.accessibility-mode .pol-alert,
+html[data-theme="light"] body.accessibility-mode .ti span,
+html[data-theme="light"] body.accessibility-mode .ds-tag.red,
+html[data-theme="light"] body.accessibility-mode .ds-session-day,
+html[data-theme="light"] body.accessibility-mode [style*="color:var(--red)"]{
+  color:#7f071d !important;
+}
+@media(max-width:1240px){
   nav .nav-links{display:none;}
   .ham-btn{display:flex;}
   .mobile-nav{display:block;}
 }
-@media(max-width:620px){.a11y-toggle{padding:5px 7px;}}
+@media(max-width:768px){.theme-label{display:none;}}
+@media(max-width:620px){
+  .a11y-toggle,.theme-toggle{padding:5px 7px;}
+  .nav-controls{gap:6px;padding-left:8px;margin-left:0;}
+  .control-divider{height:18px;}
+}
+@media(max-width:480px){.a11y-label{display:none;}}
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto;}
   *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;}
@@ -959,9 +1123,15 @@ body.accessibility-mode *,body.accessibility-mode *::before,body.accessibility-m
     <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ul>
   <div class="nav-right">
-    <button class="a11y-toggle" id="accessibilityToggle" type="button" aria-pressed="false" aria-label="Turn on accessibility view">
-      <span class="a11y-icon" aria-hidden="true">A+</span><span class="a11y-label">Accessibility</span>
-    </button>
+    <div class="nav-controls" role="group" aria-label="Display settings">
+      <button class="theme-toggle" id="themeToggle" type="button" aria-pressed="false" aria-label="Light mode" title="Turn on light mode">
+        <span class="theme-icon" aria-hidden="true">☀</span><span class="theme-label">Light Mode</span>
+      </button>
+      <span class="control-divider" aria-hidden="true"></span>
+      <button class="a11y-toggle" id="accessibilityToggle" type="button" aria-pressed="false" aria-label="Turn on accessibility view">
+        <span class="a11y-icon" aria-hidden="true">A+</span><span class="a11y-label">Accessibility</span>
+      </button>
+    </div>
     <div class="pulse" aria-hidden="true"></div>
     <div class="nav-status">Fall 2026</div>
     <button class="ham-btn" id="ham-btn" type="button" aria-label="Open menu" aria-controls="mobile-nav" aria-expanded="false" onclick="toggleMobileNav()">
@@ -1810,6 +1980,7 @@ body.accessibility-mode *,body.accessibility-mode *::before,body.accessibility-m
   <p style="font-size:11px;color:var(--text2);line-height:1.8;max-width:760px;margin-bottom:24px;">No single textbook. Readings, invited lectures, and practice-based frameworks are distributed throughout the semester, covering AI, ethics, representation, disclosure, media, environmental systems, stakeholder communication, and design culture.</p>
   <div class="th-strip">
     <div class="th-card th-has-work" data-work="fw-crawford"><div class="th-name">Kate Crawford</div><div class="th-field">AI · Power · Extractivism</div></div>
+    <div class="th-card th-has-work" data-work="fw-gebru"><div class="th-name">Timnit Gebru</div><div class="th-field">Algorithmic Bias · Accountability · Independent Research</div></div>
     <div class="th-card th-has-work" data-work="fw-benjamin"><div class="th-name">Ruha Benjamin</div><div class="th-field">Race · Technology · Bias</div></div>
     <div class="th-card th-has-work" data-work="fw-noble"><div class="th-name">Safiya Umoja Noble</div><div class="th-field">Algorithms of Oppression</div></div>
     <div class="th-card th-has-work" data-work="fw-colomina"><div class="th-name">Beatriz Colomina</div><div class="th-field">Media · Architecture · Body</div></div>
@@ -1839,6 +2010,19 @@ body.accessibility-mode *,body.accessibility-mode *::before,body.accessibility-m
       <div class="feat-work-sub">Power, Politics, and the Planetary Costs of Artificial Intelligence · Yale University Press, 2021</div>
       <div class="feat-work-authors"><a href="https://katecrawford.net/" target="_blank" rel="noopener" class="feat-work-author">Kate Crawford ↗</a></div>
       <div class="feat-work-desc">Crawford maps AI not as software but as geography — tracing the mines, server farms, warehouses, and bodies that make machine learning possible. The atlas form is deliberate: AI has spatial, material, and political coordinates that its interfaces hide. Crawford exposes extraction at every layer — lithium and cobalt from the earth, labor from crowdworkers and fulfillment centers, data from users who did not consent to its use as training material. For the ethics module, this is the grounding text: before asking what AI does in design practice, students must account for what it costs and who bears that cost. The book also provides the visual and rhetorical model for how to make systems legible — a direct input into the data literacy and narrative intelligence modules.</div>
+    </div>
+  </div>
+
+  <div class="feat-work" id="fw-gebru">
+    <div class="feat-work-bar"></div>
+    <div class="feat-work-body">
+      <div class="feat-work-eyebrow">Research Framework · Core Module A</div>
+      <div class="feat-work-title">Algorithmic Bias, Accountability, and Independent AI Research</div>
+      <div class="feat-work-sub">Founder and Executive Director · Distributed Artificial Intelligence Research Institute</div>
+      <div class="feat-work-authors">
+        <a href="https://dair-institute.org/" target="_blank" rel="noopener" class="feat-work-author">Distributed AI Research Institute ↗</a>
+      </div>
+      <div class="feat-work-desc">Gebru’s research examines algorithmic bias and the institutional accountability required when AI systems shape representation, access, and public life. As founder and executive director of the Distributed Artificial Intelligence Research Institute (DAIR), she advances independent, community-rooted AI research outside Big Tech. For the course, her work connects dataset critique and representational harm to questions of labor, power, institutional responsibility, and the development of more accountable research practices.</div>
     </div>
   </div>
 
@@ -2390,6 +2574,41 @@ document.addEventListener('click',function(e){
 </script>
 
 <script>
+/* ── OPTIONAL LIGHT MODE ── */
+(function(){
+  const toggle=document.getElementById('themeToggle');
+  if(!toggle) return;
+
+  /* Preserve UT's orange field and white T while rendering its pale wordmark black. */
+  const utkLogo=document.querySelector('.partner-mark.utk > img:not(.utk-logo-text-layer)');
+  if(utkLogo&&!document.querySelector('.partner-mark.utk .utk-logo-text-layer')){
+    const textLayer=utkLogo.cloneNode(false);
+    textLayer.classList.add('utk-logo-text-layer');
+    textLayer.alt='';
+    textLayer.setAttribute('aria-hidden','true');
+    utkLogo.parentElement.appendChild(textLayer);
+  }
+
+  function setLightMode(enabled,savePreference){
+    if(enabled) document.documentElement.setAttribute('data-theme','light');
+    else document.documentElement.removeAttribute('data-theme');
+    toggle.setAttribute('aria-pressed',enabled?'true':'false');
+    toggle.setAttribute('aria-label',enabled?'Turn off light mode':'Turn on light mode');
+    toggle.setAttribute('title',enabled?'Turn off light mode':'Turn on light mode');
+    if(savePreference){
+      try{localStorage.setItem('prompting-impact-theme',enabled?'light':'dark');}catch(e){}
+    }
+  }
+
+  const saved=document.documentElement.getAttribute('data-theme')==='light';
+  setLightMode(saved,false);
+  toggle.addEventListener('click',function(){
+    setLightMode(document.documentElement.getAttribute('data-theme')!=='light',true);
+  });
+})();
+</script>
+
+<script>
 /* ── OPTIONAL ACCESSIBILITY VIEW ── */
 (function(){
   const toggle=document.getElementById('accessibilityToggle');
@@ -2455,35 +2674,6 @@ document.addEventListener('click',function(e){
   if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches){
     setMotionPaused(true);
   }
-})();
-</script>
-
-<script>
-/* Align only the accessibility control with the left edge of Pause Animation. */
-(function(){
-  const accessibilityToggle=document.getElementById('accessibilityToggle');
-  const motionToggle=document.getElementById('heroMotionToggle');
-  if(!accessibilityToggle||!motionToggle) return;
-  let alignmentFrame;
-
-  function alignAccessibilityControl(){
-    if(alignmentFrame) cancelAnimationFrame(alignmentFrame);
-    accessibilityToggle.style.transform='';
-    if(window.innerWidth<=1120||document.body.classList.contains('accessibility-mode')) return;
-    alignmentFrame=requestAnimationFrame(function(){
-      const accessibilityLeft=accessibilityToggle.getBoundingClientRect().left;
-      const motionLeft=motionToggle.getBoundingClientRect().left;
-      accessibilityToggle.style.transform='translateX('+Math.round(motionLeft-accessibilityLeft)+'px)';
-    });
-  }
-
-  window.addEventListener('resize',alignAccessibilityControl);
-  window.addEventListener('load',alignAccessibilityControl,{once:true});
-  accessibilityToggle.addEventListener('click',function(){
-    requestAnimationFrame(alignAccessibilityControl);
-  });
-  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(alignAccessibilityControl);
-  alignAccessibilityControl();
 })();
 </script>
 
