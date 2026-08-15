@@ -179,13 +179,8 @@ nav{
   isolation:isolate;
   -webkit-backface-visibility:hidden;
   backface-visibility:hidden;
-  -webkit-filter:drop-shadow(0 0 28px rgba(0,0,0,0.48));
-  filter:drop-shadow(0 0 28px rgba(0,0,0,0.48));
   -webkit-mask-image:radial-gradient(ellipse 78% 70% at 52% 48%, #000 58%, rgba(0,0,0,.72) 76%, transparent 100%);
   mask-image:radial-gradient(ellipse 78% 70% at 52% 48%, #000 58%, rgba(0,0,0,.72) 76%, transparent 100%);
-}
-.hero-header-art.is-theme-switching{
-  transform:translate3d(-50%,0,.01px) scale(1.00001);
 }
 .hero-header-art img,
 .hero-header-art video{
@@ -193,15 +188,31 @@ nav{
   width:100%;
   height:auto;
 }
-.hero-header-art img{
-  filter:drop-shadow(0 0 28px rgba(0,0,0,0.48));
-}
 .hero-header-art video{
   -webkit-filter:none !important;
   filter:none !important;
   -webkit-backface-visibility:hidden;
   backface-visibility:hidden;
   transform:translateZ(0);
+}
+.hero-video-dark{
+  position:relative;
+  opacity:1;
+  visibility:visible;
+}
+.hero-video-light{
+  position:absolute;
+  inset:0;
+  opacity:0;
+  visibility:hidden;
+}
+html[data-theme="light"] .hero-video-dark{
+  opacity:0;
+  visibility:hidden;
+}
+html[data-theme="light"] .hero-video-light{
+  opacity:1;
+  visibility:visible;
 }
 .hero-motion-toggle{
   position:absolute;
@@ -1050,12 +1061,8 @@ html[data-theme="light"] .ds-tag.blue{
 html[data-theme="light"] .ds-tag.cream{
   border-color:var(--border2);color:var(--text2);background:var(--cream-dim);
 }
-/* Invert the image-led hero into a true light treatment while retaining its color identity. */
+/* The light hero is pre-rendered so iOS Safari never has to remove a video filter. */
 html[data-theme="light"] .hero-header-art{opacity:.94;}
-html[data-theme="light"] .hero-header-art{
-  -webkit-filter:invert(1) hue-rotate(180deg) contrast(1.2) brightness(1.04) drop-shadow(0 0 22px rgba(0,0,0,.12));
-  filter:invert(1) hue-rotate(180deg) contrast(1.2) brightness(1.04) drop-shadow(0 0 22px rgba(0,0,0,.12));
-}
 html[data-theme="light"] .hero::after{
   background:linear-gradient(to top,rgba(255,255,255,1) 0%,rgba(255,255,255,.94) 38%,rgba(255,255,255,.54) 74%,transparent 100%);
 }
@@ -1216,7 +1223,10 @@ html[data-theme="light"] body.accessibility-mode [style*="color:var(--red)"]{
 <!-- HERO -->
 <section class="hero" id="hero">
   <div class="hero-bg"></div>
-  <div class="hero-header-art"><video autoplay muted loop playsinline preload="auto" aria-label="Animated cyber-cartographic hero graphic"><source src="assets/hero-animation-mobile.mp4" type="video/mp4" media="(max-width:600px)"><source src="assets/hero-animation-desktop.mp4" type="video/mp4">Your browser does not support the video tag.</video></div>
+  <div class="hero-header-art" role="img" aria-label="Animated cyber-cartographic hero graphic">
+    <video class="hero-video-dark" autoplay muted loop playsinline preload="auto" aria-hidden="true"><source src="assets/hero-animation-mobile.mp4" type="video/mp4" media="(max-width:600px)"><source src="assets/hero-animation-desktop.mp4" type="video/mp4">Your browser does not support the video tag.</video>
+    <video class="hero-video-light" autoplay muted loop playsinline preload="auto" aria-hidden="true"><source src="assets/hero-animation-mobile-light.mp4" type="video/mp4" media="(max-width:600px)"><source src="assets/hero-animation-desktop-light.mp4" type="video/mp4"></video>
+  </div>
   <button class="hero-motion-toggle" id="heroMotionToggle" type="button" aria-pressed="false" aria-label="Pause hero animations">Pause Animation</button>
   <div class="hero-plate">PI</div>
   <div class="hero-top au au1">
@@ -2656,55 +2666,35 @@ document.addEventListener('keydown',function(e){
 (function(){
   const toggle=document.getElementById('themeToggle');
   if(!toggle) return;
-  const heroArt=document.querySelector('.hero-header-art');
-  const heroVideo=document.querySelector('.hero-header-art video');
-  let playbackCheck=0;
-  let layerRefresh=0;
+  const darkVideo=document.querySelector('.hero-video-dark');
+  const lightVideo=document.querySelector('.hero-video-light');
 
-  function playHeroVideo(){
-    if(!heroVideo||document.hidden||document.body.classList.contains('motion-paused')) return;
-    const attempt=heroVideo.play();
+  function playHeroVideo(video){
+    if(document.hidden||document.body.classList.contains('motion-paused')) return;
+    if(!video) return;
+    video.muted=true;
+    video.playsInline=true;
+    const attempt=video.play();
     if(attempt&&typeof attempt.catch==='function') attempt.catch(function(){});
   }
 
-  function verifyHeroPlayback(){
-    if(!heroVideo||document.body.classList.contains('motion-paused')) return;
-    window.clearTimeout(playbackCheck);
-    const startTime=heroVideo.currentTime;
-    playbackCheck=window.setTimeout(function(){
-      if(document.hidden||document.body.classList.contains('motion-paused')) return;
-      if(heroVideo.readyState<2){
-        heroVideo.addEventListener('canplay',playHeroVideo,{once:true});
-        return;
-      }
-      if(heroVideo.paused||Math.abs(heroVideo.currentTime-startTime)<.04){
-        const resumeAt=startTime;
-        heroVideo.addEventListener('loadedmetadata',function restoreHeroTime(){
-          if(Number.isFinite(resumeAt)&&heroVideo.duration){
-            try{heroVideo.currentTime=Math.min(resumeAt,Math.max(0,heroVideo.duration-.05));}catch(e){}
-          }
-          playHeroVideo();
-        },{once:true});
-        heroVideo.load();
-      }
-    },700);
-  }
-
-  function refreshHeroLayer(){
-    window.clearTimeout(layerRefresh);
-    if(heroArt){
-      heroArt.classList.remove('is-theme-switching');
-      void heroArt.offsetWidth;
-      heroArt.classList.add('is-theme-switching');
+  function syncHeroVideos(lightMode){
+    const source=lightMode?darkVideo:lightVideo;
+    const target=lightMode?lightVideo:darkVideo;
+    if(!source||!target){
+      playHeroVideo(target||source);
+      return;
     }
-    layerRefresh=window.setTimeout(function(){
-      if(heroArt){
-        heroArt.classList.remove('is-theme-switching');
-        void heroArt.offsetWidth;
+    const syncTime=source.currentTime;
+    const align=function(){
+      if(Number.isFinite(syncTime)&&target.duration){
+        try{target.currentTime=Math.min(syncTime,Math.max(0,target.duration-.05));}catch(e){}
       }
-      playHeroVideo();
-      verifyHeroPlayback();
-    },0);
+      playHeroVideo(target);
+      source.pause();
+    };
+    if(target.readyState>=1) align();
+    else target.addEventListener('loadedmetadata',align,{once:true});
   }
 
   /* Preserve UT's orange field and white T while rendering its pale wordmark black. */
@@ -2720,9 +2710,7 @@ document.addEventListener('keydown',function(e){
   function setLightMode(enabled,savePreference){
     if(enabled) document.documentElement.setAttribute('data-theme','light');
     else document.documentElement.removeAttribute('data-theme');
-    /* Keep the live video unfiltered and switch the effect on its wrapper.
-       This avoids the stale video-compositor layer seen in iOS Safari. */
-    refreshHeroLayer();
+    syncHeroVideos(enabled);
     toggle.setAttribute('aria-pressed',enabled?'true':'false');
     toggle.setAttribute('aria-label',enabled?'Turn off light mode':'Turn on light mode');
     toggle.setAttribute('title',enabled?'Turn off light mode':'Turn on light mode');
@@ -2736,12 +2724,16 @@ document.addEventListener('keydown',function(e){
   toggle.addEventListener('click',function(){
     setLightMode(document.documentElement.getAttribute('data-theme')!=='light',true);
   });
-  window.addEventListener('pageshow',refreshHeroLayer);
+  window.addEventListener('pageshow',function(){
+    syncHeroVideos(document.documentElement.getAttribute('data-theme')==='light');
+  });
   document.addEventListener('visibilitychange',function(){
-    if(!document.hidden) refreshHeroLayer();
+    if(!document.hidden) syncHeroVideos(document.documentElement.getAttribute('data-theme')==='light');
   });
   window.addEventListener('orientationchange',function(){
-    window.setTimeout(refreshHeroLayer,120);
+    window.setTimeout(function(){
+      syncHeroVideos(document.documentElement.getAttribute('data-theme')==='light');
+    },120);
   });
 })();
 </script>
@@ -2785,7 +2777,9 @@ document.addEventListener('keydown',function(e){
     toggle.setAttribute('aria-label', paused ? 'Play hero animations' : 'Pause hero animations');
 
     heroVideos.forEach(function(video){
-      if(paused){
+      const isLight=document.documentElement.getAttribute('data-theme')==='light';
+      const isActive=isLight?video.classList.contains('hero-video-light'):video.classList.contains('hero-video-dark');
+      if(paused||!isActive){
         video.pause();
       }else{
         const attempt = video.play();
