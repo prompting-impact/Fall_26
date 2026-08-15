@@ -39,15 +39,25 @@ try{
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 ::selection{background:rgba(200,16,46,0.3);color:#fff;}
-html{scroll-behavior:smooth;}
+html{scroll-behavior:smooth;max-width:100%;overflow-x:hidden;}
 body{
   background:var(--bg);
   color:var(--text);
   font-family:var(--mono);
   font-size:13px;
   line-height:1.6;
+  width:100%;
+  max-width:100%;
   overflow-x:hidden;
+  overflow-wrap:anywhere;
   cursor:crosshair;
+}
+main,.w,.section,.hero,.hero-top,.nav-brand,.nav-right{min-width:0;}
+img,video,canvas{max-width:100%;}
+.timeline-wrap,.ds-mod-breakdown,#path-result{
+  max-width:100%;
+  overscroll-behavior-inline:contain;
+  -webkit-overflow-scrolling:touch;
 }
 body::before{
   content:'';position:fixed;inset:0;
@@ -171,7 +181,16 @@ nav{
   display:block;
   width:100%;
   height:auto;
+}
+.hero-header-art img{
   filter:drop-shadow(0 0 28px rgba(0,0,0,0.48));
+}
+.hero-header-art video{
+  -webkit-filter:drop-shadow(0 0 28px rgba(0,0,0,0.48));
+  filter:drop-shadow(0 0 28px rgba(0,0,0,0.48));
+  -webkit-backface-visibility:hidden;
+  backface-visibility:hidden;
+  will-change:filter;
 }
 .hero-motion-toggle{
   position:absolute;
@@ -668,7 +687,7 @@ position:relative;
   .hero-title{font-size:clamp(34px,10vw,60px);margin-top:44px;margin-bottom:6px;}
   .hero-gensler{width:100%;}
   .hero-partners{margin-left:0;}
-  .hero-header-art{top:62px;width:120vw;}
+  .hero-header-art{top:62px;width:100%;max-width:100%;}
   .hero-sub{font-size:clamp(16px,4.5vw,22px);max-width:100%;}
   .hero-desc{font-size:11px;}
   .hero-tags{margin-top:14px;}
@@ -706,6 +725,10 @@ position:relative;
 
   /* Topics */
   .topics-grid{grid-template-columns:1fr;}
+
+  /* Inline content grids collapse with the preview instead of being clipped. */
+  .vision-grid{grid-template-columns:1fr !important;}
+  .vision-grid > div{padding:24px 20px !important;}
 
   /* Theorists */
   .th-strip{gap:3px;}
@@ -1018,6 +1041,7 @@ html[data-theme="light"] .ds-tag.cream{
 /* Invert the image-led hero into a true light treatment while retaining its color identity. */
 html[data-theme="light"] .hero-header-art{opacity:.94;}
 html[data-theme="light"] .hero-header-art video{
+  -webkit-filter:invert(1) hue-rotate(180deg) contrast(1.2) brightness(1.04) drop-shadow(0 0 22px rgba(0,0,0,.12));
   filter:invert(1) hue-rotate(180deg) contrast(1.2) brightness(1.04) drop-shadow(0 0 22px rgba(0,0,0,.12));
 }
 html[data-theme="light"] .hero::after{
@@ -1090,8 +1114,8 @@ html[data-theme="light"] body.accessibility-mode [style*="color:var(--red)"]{
   .a11y-toggle,.theme-toggle{padding:5px 7px;}
   .nav-controls{gap:6px;padding-left:8px;margin-left:0;}
   .control-divider{height:18px;}
+  .a11y-label{display:none;}
 }
-@media(max-width:480px){.a11y-label{display:none;}}
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto;}
   *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;}
@@ -1216,7 +1240,7 @@ html[data-theme="light"] body.accessibility-mode [style*="color:var(--red)"]{
 <section class="section au au2" id="vision">
   <div class="sh"><span class="sh-num">01</span><h2 class="sh-title">Course Vision</h2><div class="sh-line"></div></div>
 
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-bottom:40px;">
+  <div class="vision-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-bottom:40px;">
     <div style="background:var(--surface);border:1px solid var(--border);padding:36px;">
       <div style="font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--red);margin-bottom:16px;">The Premise</div>
       <p style="font-family:var(--serif);font-size:18px;font-style:italic;color:var(--text);line-height:1.7;margin-bottom:16px;">AI is no longer peripheral to design culture. It is reshaping how architects and designers research, visualize, communicate, evaluate, and justify decisions.</p>
@@ -1388,7 +1412,7 @@ html[data-theme="light"] body.accessibility-mode [style*="color:var(--red)"]{
 
   <div style="font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--red);margin-bottom:14px;">Core Teaching Team</div>
 
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:3px;margin-bottom:40px;">
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(270px,100%),1fr));gap:3px;margin-bottom:40px;">
     <div style="background:var(--surface);border:1px solid var(--border);padding:28px;">
       <div style="font-family:var(--serif);font-size:21px;color:var(--text);margin-bottom:8px;">Rana Abudayyeh</div>
       <div style="font-size:9px;line-height:1.7;color:var(--text2);margin-bottom:14px;">Course Lead · Associate Professor and Robin Klehr Avia Professor of Interior Architecture · University of Tennessee, Knoxville</div>
@@ -1420,7 +1444,7 @@ html[data-theme="light"] body.accessibility-mode [style*="color:var(--red)"]{
     Throughout the semester, students will work directly with invited faculty, researchers, designers, and thought leaders who bring specialized expertise to the course’s short modules, public conversations, and lectures.
   </p>
 
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:3px;">
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(270px,100%),1fr));gap:3px;">
     <div style="background:var(--surface);border:1px solid var(--border);padding:28px;">
       <div style="font-family:var(--serif);font-size:20px;color:var(--text);margin-bottom:8px;">Jian Huang</div>
       <div style="font-size:9px;line-height:1.7;color:var(--text2);margin-bottom:14px;">Professor · Min H. Kao Department of Electrical Engineering and Computer Science · University of Tennessee, Knoxville</div>
@@ -1452,7 +1476,7 @@ html[data-theme="light"] body.accessibility-mode [style*="color:var(--red)"]{
 <!-- PUBLIC EVENT CONTRIBUTORS -->
 <section class="section au au3" id="public-event-contributors">
   <div class="sh"><span class="sh-num">05B</span><h2 class="sh-title">Public Event Contributors</h2><div class="sh-line"></div></div>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:3px;">
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(270px,100%),1fr));gap:3px;">
     <div style="background:var(--surface);border:1px solid var(--border);padding:28px;">
       <div style="font-family:var(--serif);font-size:20px;color:var(--text);margin-bottom:8px;">Elley Cheng</div>
       <div style="font-size:9px;line-height:1.7;color:var(--text2);">CEO and Co-Founder · Useful Arts · Former President of Pantone</div>
@@ -2597,6 +2621,9 @@ document.addEventListener('keydown',function(e){
 (function(){
   const toggle=document.getElementById('themeToggle');
   if(!toggle) return;
+  const heroVideo=document.querySelector('.hero-header-art video');
+  const darkHeroFilter='drop-shadow(0 0 28px rgba(0,0,0,0.48))';
+  const lightHeroFilter='invert(1) hue-rotate(180deg) contrast(1.2) brightness(1.04) drop-shadow(0 0 22px rgba(0,0,0,.12))';
 
   /* Preserve UT's orange field and white T while rendering its pale wordmark black. */
   const utkLogo=document.querySelector('.partner-mark.utk > img:not(.utk-logo-text-layer)');
@@ -2611,6 +2638,18 @@ document.addEventListener('keydown',function(e){
   function setLightMode(enabled,savePreference){
     if(enabled) document.documentElement.setAttribute('data-theme','light');
     else document.documentElement.removeAttribute('data-theme');
+    if(heroVideo){
+      /* iOS Safari can retain a stale filtered video layer after a theme change.
+         Applying the filter directly and refreshing that layer keeps playback live. */
+      const nextFilter=enabled?lightHeroFilter:darkHeroFilter;
+      heroVideo.style.webkitFilter=nextFilter;
+      heroVideo.style.filter=nextFilter;
+      heroVideo.style.transform='translateZ(0)';
+      void heroVideo.offsetHeight;
+      requestAnimationFrame(function(){
+        heroVideo.style.removeProperty('transform');
+      });
+    }
     toggle.setAttribute('aria-pressed',enabled?'true':'false');
     toggle.setAttribute('aria-label',enabled?'Turn off light mode':'Turn on light mode');
     toggle.setAttribute('title',enabled?'Turn off light mode':'Turn on light mode');
