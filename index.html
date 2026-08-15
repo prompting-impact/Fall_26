@@ -49,11 +49,13 @@ body{
   width:100%;
   max-width:100%;
   overflow-x:hidden;
-  overflow-wrap:anywhere;
   cursor:crosshair;
 }
 main,.w,.section,.hero,.hero-top,.nav-brand,.nav-right{min-width:0;}
 img,video,canvas{max-width:100%;}
+p,li,a,.tool-item,.feat-work-desc,.topic-text,.pol-title,.premise-text,.ds-session-title{
+  overflow-wrap:anywhere;
+}
 .timeline-wrap,.ds-mod-breakdown,#path-result{
   max-width:100%;
   overscroll-behavior-inline:contain;
@@ -257,6 +259,7 @@ body.motion-paused *::after{
   font-weight:700;letter-spacing:.015em;line-height:.95;
   color:#fff;text-transform:uppercase;margin-top:132px;margin-bottom:8px;
   max-width:720px;
+  overflow-wrap:normal;word-break:normal;white-space:nowrap;hyphens:none;
 }
 .hero-title span{color:var(--red);}
 .hero-title .impact-word{display:inline-block;}
