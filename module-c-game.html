@@ -358,6 +358,15 @@
         return `${firstName} ${lastName}`.trim();
       }
 
+      function toInitials(name) {
+        if (/^Imposter\s+\d+$/i.test(name)) {
+          return name.replace(/Imposter\s+(\d+)/i, "I$1");
+        }
+        const parts = name.trim().split(/\s+/).filter(Boolean);
+        if (!parts.length) return name;
+        return parts.map((part) => `${part.charAt(0).toUpperCase()}.`).join("");
+      }
+
       function shuffle(list) {
         const arr = [...list];
         for (let i = arr.length - 1; i > 0; i--) {
@@ -489,7 +498,7 @@
               </p>
               <p class="reveal-detail">
                 Answer: <strong>${round.clip.type}</strong>
-                · Author: <strong>${round.clip.student}</strong>
+                · Author: <strong>${round.clip.initials}</strong>
               </p>
             `;
 
@@ -545,10 +554,12 @@
           .map((file) => {
             const type = detectType(file);
             if (!type) return null;
+            const student = parseStudent(file);
             return {
               file,
               path: `module-c/submissions-web/${encodeURIComponent(file).replace(/%2F/g, "/")}`,
-              student: parseStudent(file),
+              student,
+              initials: toInitials(student),
               type: type.key,
               family: type.family,
               authenticity: type.authenticity,

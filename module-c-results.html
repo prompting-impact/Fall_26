@@ -281,6 +281,15 @@
         return `${firstName} ${lastName}`.trim();
       }
 
+      function toInitials(name) {
+        if (/^Imposter\s+\d+$/i.test(name)) {
+          return name.replace(/Imposter\s+(\d+)/i, "I$1");
+        }
+        const parts = name.trim().split(/\s+/).filter(Boolean);
+        if (!parts.length) return name;
+        return parts.map((part) => `${part.charAt(0).toUpperCase()}.`).join("");
+      }
+
       function allVideos() {
         return [...board.querySelectorAll("video")];
       }
@@ -304,14 +313,14 @@
         const sorted = [...clips].sort((a, b) => {
           if (sortMode === "student") {
             return (
-              a.student.localeCompare(b.student) ||
+              a.initials.localeCompare(b.initials) ||
               typeRank(a.type) - typeRank(b.type) ||
               a.file.localeCompare(b.file)
             );
           }
           return (
             typeRank(a.type) - typeRank(b.type) ||
-            a.student.localeCompare(b.student) ||
+            a.initials.localeCompare(b.initials) ||
             a.file.localeCompare(b.file)
           );
         });
@@ -322,7 +331,7 @@
         }
 
         for (const clip of sorted) {
-          const key = sortMode === "student" ? clip.student : clip.type;
+          const key = sortMode === "student" ? clip.initials : clip.type;
           if (!groups.has(key)) groups.set(key, []);
           groups.get(key).push(clip);
         }
@@ -363,7 +372,7 @@
               <video muted loop autoplay playsinline controls preload="auto"></video>
             `;
             const meta = item.querySelector(".clip-meta");
-            meta.textContent = sortMode === "type" ? clip.student : clip.type;
+            meta.textContent = sortMode === "type" ? clip.initials : clip.type;
             const video = item.querySelector("video");
             video.src = clip.path;
             video.muted = !soundOn;
@@ -414,12 +423,16 @@
           status.textContent = "No videos listed in module-c/videos.json.";
         }
 
-        clips = files.map((file) => ({
-          file,
-          path: `module-c/submissions-web/${encodeURIComponent(file).replace(/%2F/g, "/")}`,
-          student: parseStudent(file),
-          type: detectType(file),
-        }));
+        clips = files.map((file) => {
+          const student = parseStudent(file);
+          return {
+            file,
+            path: `module-c/submissions-web/${encodeURIComponent(file).replace(/%2F/g, "/")}`,
+            student,
+            initials: toInitials(student),
+            type: detectType(file),
+          };
+        });
 
         muteAllBtn.classList.add("is-active");
         render();
